@@ -4,6 +4,8 @@
 import urllib
 import urllib2
 from BeautifulSoup import BeautifulSoup
+import time
+import re
 
 class Rutracker():
 
@@ -15,11 +17,9 @@ class Rutracker():
 
     def login(self, login, password):
 
-        login_values = {"login_username" : login,
-                        "login_password" : password,
-                        "login" : "Вход"}
-
-        params = urllib.urlencode(login_values)
+        params = urllib.urlencode({"login_username" : login,
+                                   "login_password" : password,
+                                   "login" : "Вход"})
 
         try:
             self.opener.open("http://login.rutracker.org/forum/login.php", params)
@@ -38,5 +38,23 @@ class Rutracker():
                 for option in group.findAll('option', attrs={'class' : None}):
                     self.forum_ids.append(option['value'])
 
-    def search(self, text):
-        pass
+        return self.forum_ids
+
+    def search(self, text, ids):
+        links = {}
+
+        for id in ids:
+            link = "http://rutracker.org/forum/tracker.php?f=%s&nm=%s" % (id, text)
+
+            try:
+                page = self.opener.open(link)
+                soup = BeautifulSoup(page.read())
+                for result in soup.findAll('a', attrs={'class' : 'med tLink bold'}):
+                    links[(str(result['href']))[result['href'].find('=')+1:]] = BeautifulSoup(str(result)).a.text
+
+                time.sleep(1)
+            except :
+                pass
+            
+        return links
+
