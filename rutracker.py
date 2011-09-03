@@ -10,7 +10,6 @@ import re
 class Rutracker():
 
     def __init__(self):
-        self.forum_ids = []
 
         self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
         urllib2.install_opener(self.opener)
@@ -28,7 +27,7 @@ class Rutracker():
 
     def get_forum_ids(self):
 
-        self.forum_ids = []
+        forum_ids = []
 
         page = self.opener.open("http://rutracker.org/forum/tracker.php")
         soup = BeautifulSoup(page.read())
@@ -36,9 +35,9 @@ class Rutracker():
         for optgroup in ["&nbsp;Музыка","&nbsp;Электронная музыка","&nbsp;Рок-музыка"]:
             for group in soup.findAll('optgroup',label=optgroup):
                 for option in group.findAll('option', attrs={'class' : None}):
-                    self.forum_ids.append(option['value'])
+                    forum_ids.append(option['value'])
 
-        return self.forum_ids
+        return forum_ids
 
     def search(self, text, ids):
         links = {}
