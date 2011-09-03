@@ -1,10 +1,10 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 import gtk
-import urllib
 import os
-import tagpy
 import sys
+import rutracker
 
 try:
     import eyeD3
@@ -13,7 +13,7 @@ except:
 
 artists_list = []
 
-def scan_folder(self, path):
+def scan_folder(path):
     for root, dirs, files in os.walk(path):
         for name in files:
             filename = os.path.join(root, name)
